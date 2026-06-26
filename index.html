@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Guess Game 🌸</title>
+
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+    font-family: Arial;
+    background: #ffd6e8;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* tło */
+.background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.25;
+    z-index: 0;
+}
+
+/* wspólny panel */
+.box {
+    position: relative;
+    z-index: 2;
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    width: 320px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+h1 {
+    color: #ff4f9a;
+}
+
+button {
+    padding: 10px 15px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 10px;
+    background: #ff4f9a;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #ff2f86;
+}
+
+input {
+    padding: 10px;
+    width: 80%;
+    border-radius: 10px;
+    border: 1px solid #ffb6d5;
+    margin-top: 10px;
+}
+
+/* KONFETTI SERDUSZKA */
+.heart {
+    position: absolute;
+    top: -10px;
+    color: #ff4f9a;
+    font-size: 20px;
+    animation: fall linear forwards;
+}
+
+@keyframes fall {
+    to {
+        transform: translateY(110vh);
+        opacity: 0;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<img src="flowers.jpg" class="background">
+
+<!-- MENU -->
+<div id="menu" class="box">
+    <h1>🌸 Guess Game</h1>
+    <button onclick="startGame()">Start gry</button>
+    <button onclick="showInfo()">Instrukcja</button>
+    <p id="info"></p>
+</div>
+
+<!-- GRA -->
+<div id="game" class="box" style="display:none;">
+    <h1>Zgadnij liczbę 💗</h1>
+
+    <input id="guess" type="number" placeholder="1-100">
+
+    <br>
+    <button onclick="check()">Sprawdź</button>
+    <button onclick="restart()">Nowa gra</button>
+
+    <p id="result"></p>
+    <p id="attempts"></p>
+</div>
+
+<script>
+
+let secret;
+let attempts = 0;
+
+function startGame() {
+    document.getElementById("menu").style.display = "none";
+    document.getElementById("game").style.display = "block";
+
+    secret = Math.floor(Math.random() * 100) + 1;
+    attempts = 0;
+}
+
+function showInfo() {
+    document.getElementById("info").innerText =
+        "Zgadnij liczbę od 1 do 100. Masz nieskończone próby 💗";
+}
+
+function check() {
+    let guess = Number(document.getElementById("guess").value);
+    if (guess < 1 || guess > 100 || isNaN(guess)) {
+        document.getElementById("result").innerText = "Podaj liczbę od 1 do 100🌸";
+        return;
+    }
+
+    attempts++;
+
+    if (guess < secret) {
+        document.getElementById("result").innerText = "Za mało 🌸";
+    } 
+    else if (guess > secret) {
+        document.getElementById("result").innerText = "Za dużo 🌸";
+    } 
+    else {
+        document.getElementById("result").innerText =
+            "WYGRAŁAŚ 🎉💗";
+
+        spawnHearts();
+    }
+
+    document.getElementById("attempts").innerText =
+        "Próby: " + attempts;
+}
+
+function restart() {
+    secret = Math.floor(Math.random() * 100) + 1;
+    attempts = 0;
+    document.getElementById("result").innerText = "";
+    document.getElementById("attempts").innerText = "";
+    document.getElementById("guess").value = "";
+}
+
+/* 💖 KONFETTI SERDUSZKA */
+function spawnHearts() {
+    for (let i = 0; i < 30; i++) {
+        let heart = document.createElement("div");
+        heart.classList.add("heart");
+        heart.innerText = "💗";
+
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.animationDuration = (2 + Math.random() * 3) + "s";
+        heart.style.fontSize = (15 + Math.random() * 20) + "px";
+
+        document.body.appendChild(heart);
+
+        setTimeout(() => {
+            heart.remove();
+        }, 5000);
+    }
+}
+</script>
+
+</body>
+</html>
